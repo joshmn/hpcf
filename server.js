@@ -20,7 +20,8 @@ function parseEnvList(env) {
 var checkRateLimit = require('./lib/rate-limit')(process.env.CORSANYWHERE_RATELIMIT);
 
 var cors_proxy = require('./lib/cors-anywhere');
-cors_proxy.createServer({
+
+function start = cors_proxy.createServer({
   originBlacklist: originBlacklist,
   originWhitelist: originWhitelist,
   requireHeader: ['origin', 'x-requested-with'],
@@ -28,7 +29,6 @@ cors_proxy.createServer({
   removeHeaders: [
     'cookie',
     'cookie2',
-    // Strip Heroku-specific headers
     'x-request-start',
     'x-request-id',
     'via',
@@ -36,16 +36,19 @@ cors_proxy.createServer({
     'total-route-time',
     'origin',
     'referrer',
-    // Other Heroku added debug headers
-    // 'x-forwarded-for',
-    // 'x-forwarded-proto',
-    // 'x-forwarded-port',
   ],
   redirectSameOrigin: true,
   httpProxyOptions: {
-    // Do not add X-Forwarded-For, etc. headers, because Heroku already adds it.
     xfwd: false,
   },
 }).listen(port, host, function() {
   console.log('Running CORS Anywhere on ' + host + ':' + port);
 });
+
+var WORKERS = process.env.WEB_CONCURRENCY || 1;
+
+throng({
+  workers: WORKERS,
+  lifetime: Infinity
+}, start)
+
