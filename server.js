@@ -25,11 +25,6 @@ var cors_proxy = require('./lib/cors-anywhere');
 
 var WORKERS = process.env.WEB_CONCURRENCY || 1;
 
-//throng(start, {
-//  workers: WORKERS,
-//  lifetime: Infinity
-//})
-
 
 function start() { 
   cors_proxy.createServer({
@@ -57,5 +52,9 @@ function start() {
   });
 }
 
-start()
+throng(start, {
+  workers: WORKERS,
+  lifetime: Infinity
+})
+
 
