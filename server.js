@@ -25,12 +25,10 @@ var cors_proxy = require('./lib/cors-anywhere');
 
 var WORKERS = process.env.WEB_CONCURRENCY || 1;
 
-function test() { }
-console.log(typeof start);
-throng(start, {
-  workers: WORKERS,
-  lifetime: Infinity
-})
+//throng(start, {
+//  workers: WORKERS,
+//  lifetime: Infinity
+//})
 
 
 function start() { 
@@ -58,4 +56,6 @@ function start() {
     console.log('Running CORS Anywhere on ' + host + ':' + port);
   });
 }
+
+start()
 
