@@ -1,3 +1,5 @@
+var throng = require('throng');
+
 // Listen on a specific host via the HOST environment variable
 var host = process.env.HOST || '0.0.0.0';
 // Listen on a specific port via the PORT environment variable
@@ -21,36 +23,39 @@ var checkRateLimit = require('./lib/rate-limit')(process.env.CORSANYWHERE_RATELI
 
 var cors_proxy = require('./lib/cors-anywhere');
 
-function start() { 
-  cors_proxy.createServer({
-  originBlacklist: originBlacklist,
-  originWhitelist: originWhitelist,
-  requireHeader: ['origin', 'x-requested-with'],
-  checkRateLimit: checkRateLimit,
-  removeHeaders: [
-    'cookie',
-    'cookie2',
-    'x-request-start',
-    'x-request-id',
-    'via',
-    'connect-time',
-    'total-route-time',
-    'origin',
-    'referrer',
-  ],
-  redirectSameOrigin: true,
-  httpProxyOptions: {
-    xfwd: false,
-  },
-}).listen(port, host, function() {
-  console.log('Running CORS Anywhere on ' + host + ':' + port);
-});
-}
-
 var WORKERS = process.env.WEB_CONCURRENCY || 1;
 
-throng({
+function test() { }
+console.log(typeof start);
+throng(start, {
   workers: WORKERS,
   lifetime: Infinity
-}, start)
+})
+
+
+function start() { 
+  cors_proxy.createServer({
+    originBlacklist: originBlacklist,
+    originWhitelist: originWhitelist,
+    requireHeader: ['origin', 'x-requested-with'],
+    checkRateLimit: null,
+    removeHeaders: [
+      'cookie',
+      'cookie2',
+      'x-request-start',
+      'x-request-id',
+      'via',
+      'connect-time',
+      'total-route-time',
+      'origin',
+      'referrer',
+    ],
+    redirectSameOrigin: true,
+    httpProxyOptions: {
+      xfwd: false,
+    },
+  }).listen(port, host, function() {
+    console.log('Running CORS Anywhere on ' + host + ':' + port);
+  });
+}
 
