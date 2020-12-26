@@ -21,7 +21,8 @@ var checkRateLimit = require('./lib/rate-limit')(process.env.CORSANYWHERE_RATELI
 
 var cors_proxy = require('./lib/cors-anywhere');
 
-function start = cors_proxy.createServer({
+function start() { 
+  cors_proxy.createServer({
   originBlacklist: originBlacklist,
   originWhitelist: originWhitelist,
   requireHeader: ['origin', 'x-requested-with'],
@@ -44,6 +45,7 @@ function start = cors_proxy.createServer({
 }).listen(port, host, function() {
   console.log('Running CORS Anywhere on ' + host + ':' + port);
 });
+}
 
 var WORKERS = process.env.WEB_CONCURRENCY || 1;
 
