@@ -53,7 +53,7 @@ function start() {
 }
 
 throng(start, {
-  workers: WORKERS,
+  count: WORKERS,
   lifetime: Infinity
 })
 
