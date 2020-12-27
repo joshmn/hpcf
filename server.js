@@ -52,9 +52,6 @@ function start() {
   });
 }
 
-throng(start, {
-  count: WORKERS,
-  lifetime: Infinity
-})
+start()
 
 
